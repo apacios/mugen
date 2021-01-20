@@ -1,0 +1,54 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.4']
+        node-version: ['10.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: xdebug
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Install NPM dependencies
+        run: |
+          npm install
+          npm run dev
+      - name: Warmup
+        run: |
+          vendor/bin/simple-phpunit --version
+          php bin/console cache:warmup --env=dev
+          php bin/console cache:warmup --env=test
+      - name: Validate composer.json
+        run: composer valid
+      - name: Run PHP Code Sniffer
+        run: php vendor/bin/phpcs
+      - name: Run PHPStan for dev env
+        run: vendor/bin/phpstan analyse -c phpstan.neon src --level 7 --no-progress
+      - name: Run PHPStan for doctrine
+        run: vendor/bin/phpstan analyse -c phpstan-doctrine.neon src --level 7 --no-progress

@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: mugen_app
+    build:
+      context: .
+      target: dev
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    environment:
+      APP_APACHE_ROOT_DIR: /var/www/html
+    ports:
+      - 89:80
+    depends_on:
+      - db
+      - maildev
+
+  db:
+    container_name: mugen_db
+    image: mysql:8.0
+    ports:
+      - 3309:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mugen
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    volumes:
+      - db:/var/lib/mysql
+
+  maildev:
+    container_name: mugen_maildev
+    image: djfarrelly/maildev
+    hostname: maildev
+    ports:
+      - 1089:80
+
+volumes:
+  db: {}
+  maildev: {}
