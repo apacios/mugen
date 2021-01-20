@@ -1,0 +1,7 @@
+parameters:
+    doctrine:
+        objectManagerLoader: build/phpstan/doctrine-orm-bootstrap.php
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:

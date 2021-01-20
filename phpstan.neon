@@ -1,0 +1,11 @@
+parameters:
+    symfony:
+        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
+        console_application_loader: build/phpstan/console-loader.php
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface::getId\(\).#'
+        - '#Cannot call method getId\(\) on string|Stringable|Symfony\\Component\\Security\\Core\\User\\UserInterface.#'
+
