@@ -34,9 +34,6 @@ class VideoProvider
             }
         }
 
-        dump($videoList);
-        die;
-
         return $videoList;
     }
 
