@@ -18,9 +18,10 @@
                 <div class="card">
                     <div class="card-header">{{ video.name }}</div>
                     <div class="card-body">
-                        <video poster="/thumbnails/{{ video.id }}.jpg" controls width="250" preload="true">
+                        <a href="{{ path('video_show', {id: video.id})}}" class="btn btn-primary">{{ video.name }}</a>
+                        {# <video poster="/thumbnails/{{ video.id }}.jpg" controls width="250" preload="true">
                             <source src="{{ video.path }}" type="video/avi">
-                        </video>
+                        </video> #}
                     </div>
                 </div>
             </div>

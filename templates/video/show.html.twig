@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello VideoController!{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="card col-8">
+            <div class="card-header">{{ video.name }}</div>
+            <div class="card-body">
+                <p>{{ data.storyline }}</p>
+                <p>
+                    <video preload="true" controls src="{{ video.path }}" poster="{{ data.mainPhoto }}"></video>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
