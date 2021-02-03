@@ -7,6 +7,7 @@
         <div class="card col-8">
             <div class="card-header">{{ video.name }}</div>
             <div class="card-body">
+                <p>Rate : {{ data.rate }}</p>
                 <p>{{ data.storyline }}</p>
                 <p>
                     <video preload="true" controls src="{{ video.path }}" poster="{{ data.mainPhoto }}"></video>

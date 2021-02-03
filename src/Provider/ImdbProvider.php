@@ -32,6 +32,7 @@ class ImdbProvider
         }
 
         return [
+            'rate' => $this->result->rating(),
             'storyline' => $this->result->storyLine(),
             'mainPhoto' => $this->result->photo(),
             'mainPictures' => $this->result->mainPictures(),
