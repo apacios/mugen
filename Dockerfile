@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
   libzip-dev  \
   libpng-dev \
   libjpeg-dev \
-  libfreetype6-dev
+  libfreetype6-dev \
+  ffmpeg
 
 RUN apt remove yarn
 RUN docker-php-ext-configure zip

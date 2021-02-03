@@ -30,16 +30,6 @@ class Serie
     private $season;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $synopsis;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $thumbnail;
-
-    /**
      * @ORM\OneToMany(targetEntity=Video::class, mappedBy="serie")
      */
     private $videos;
@@ -89,30 +79,6 @@ class Serie
     public function setSeason(int $season): self
     {
         $this->season = $season;
-
-        return $this;
-    }
-
-    public function getSynopsis(): ?string
-    {
-        return $this->synopsis;
-    }
-
-    public function setSynopsis(string $synopsis): self
-    {
-        $this->synopsis = $synopsis;
-
-        return $this;
-    }
-
-    public function getThumbnail(): ?string
-    {
-        return $this->thumbnail;
-    }
-
-    public function setThumbnail(string $thumbnail): self
-    {
-        $this->thumbnail = $thumbnail;
 
         return $this;
     }

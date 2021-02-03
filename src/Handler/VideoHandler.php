@@ -2,6 +2,7 @@
 
 namespace App\Handler;
 
+use App\Builder\ThumbnailVideoBuilder;
 use App\Entity\Serie;
 use App\Entity\Video;
 use DateTimeImmutable;
@@ -11,9 +12,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class VideoHandler
 {
-    public function __construct(EntityManagerInterface $entityManager)
+    protected EntityManagerInterface $entityManager;
+    protected ThumbnailVideoBuilder $thumbnailVideoBuilder;
+
+    public function __construct(EntityManagerInterface $entityManager, ThumbnailVideoBuilder $thumbnailVideoBuilder)
     {
         $this->entityManager = $entityManager;
+        $this->thumbnailVideoBuilder = $thumbnailVideoBuilder;
     }
 
     public function saveVideoList(string $categoryName, array $videoList): bool
@@ -33,8 +38,6 @@ class VideoHandler
                     $serie = (new Serie())
                         ->setName($serieName)
                         ->setSeason($seasonNumber)
-                        ->setSynopsis('blah blah blah')
-                        ->setThumbnail('none')
                         ->setActive(true)
                         ->setCreatedAt(new DateTimeImmutable('now'))
                         ->setUpdatedAt(new DateTimeImmutable('now'));
@@ -54,9 +57,7 @@ class VideoHandler
                     $newVideo = (new Video())
                         ->setName($videos['fileName'])
                         ->setFileName($videos['baseName'])
-                        ->setThumbnail('none')
                         ->setCategories($category)
-                        ->setSynopsis('blah blah blah blah bli')
                         ->setSerie($serie)
                         ->setPath($videos['pathName'])
                         ->setActive(true)
@@ -64,6 +65,7 @@ class VideoHandler
                         ->setUpdatedAt(new DateTimeImmutable('now'));
                     $this->entityManager->persist($newVideo);
                     $this->entityManager->flush();
+                    $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
                     continue;
                 }
 
@@ -79,9 +81,7 @@ class VideoHandler
                     $newVideo = (new Video())
                         ->setName($videoData['fileName'])
                         ->setFileName($videoData['baseName'])
-                        ->setThumbnail('none')
                         ->setCategories($category)
-                        ->setSynopsis('blah blah blah blah bli')
                         ->setSerie($serie)
                         ->setPath($videoData['pathName'])
                         ->setActive(true)
@@ -89,6 +89,7 @@ class VideoHandler
                         ->setUpdatedAt(new DateTimeImmutable('now'));
                     $this->entityManager->persist($newVideo);
                     $this->entityManager->flush();
+                    $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
                 }
             }
         }

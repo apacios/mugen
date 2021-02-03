@@ -2,7 +2,11 @@
 
 namespace App\Provider;
 
+use FFMpeg\FFMpeg;
 use Nette\Utils\Finder;
+use FFMpeg\Format\Video\WebM;
+use FFMpeg\Coordinate\TimeCode;
+use FFMpeg\Coordinate\Dimension;
 
 class VideoProvider
 {
@@ -56,6 +60,9 @@ class VideoProvider
         }
 
         $nameAndSeason = \explode('/', $folderName);
+        if (empty($nameAndSeason[1])) {
+            $nameAndSeason[1] = 0;
+        }
 
         return [
             'serie' => $nameAndSeason[0],

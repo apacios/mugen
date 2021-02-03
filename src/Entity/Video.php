@@ -28,19 +28,9 @@ class Video
     private $fileName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $synopsis;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $path;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $thumbnail;
 
     /**
      * @ORM\Column(type="boolean")
@@ -98,18 +88,6 @@ class Video
         return $this;
     }
 
-    public function getSynopsis(): ?string
-    {
-        return $this->synopsis;
-    }
-
-    public function setSynopsis(?string $synopsis): self
-    {
-        $this->synopsis = $synopsis;
-
-        return $this;
-    }
-
     public function getPath(): ?string
     {
         return $this->path;
@@ -118,18 +96,6 @@ class Video
     public function setPath(string $path): self
     {
         $this->path = $path;
-
-        return $this;
-    }
-
-    public function getThumbnail(): ?string
-    {
-        return $this->thumbnail;
-    }
-
-    public function setThumbnail(string $thumbnail): self
-    {
-        $this->thumbnail = $thumbnail;
 
         return $this;
     }
