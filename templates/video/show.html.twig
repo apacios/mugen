@@ -8,27 +8,18 @@
 {% endblock %}
 
 {% block body %}
-    {# <div id="video" class="page">
-        <div class="img-page" style="background-image: url('{{ data_imdb.mainPictures[random(0,5)].bigsrc }}')">
-            <div class="data-title">
-                <h1>{{ video.name }}</h1>
-                <p>Rate : {{ data_imdb.rate }}</p>
-            </div>
-            <div class="data-desc">
-                <p>{{ data_imdb.storyline }}</p>
-            </div>
-        </div>
-        <div class="video col-8 m-auto">
-            <video preload="true" controls src="{{ video.path }}" poster="{{ data_imdb.mainPhoto }}"></video>
-        </div>
-    </div> #}
     <div id="video" class="page">
         <video preload="true" controls src="{{ video.path }}"></video>
         <div class="data-title">
-            <h1>{{ video.name }}</h1>
+            {% if video.serie %}
+                <h1>{{ video.serie.name }}</h1>
+                <h2>S{{ video.serie.season }} E{{ video.episode }}</h2>
+            {% else %}
+                <h1>{{ video.name }}</h1>
+            {% endif %}
             <p>Rate : {{ data_imdb.rate }}</p>
         </div>
-        <div class="data-desc">
+        <div class="data-desc text-justify">
             <p>{{ data_imdb.storyline }}</p>
         </div>
     </div>

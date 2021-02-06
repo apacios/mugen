@@ -9,21 +9,28 @@
 
 {% block body %}
     <div id="dashboard" class="page">
-        {% for category in categories %}
-            <div class="row mb-5">
-                <h2 class="col-12">{{ category.name }}</h2>
-                {% for video in category.getVideos %}
-                    <div class="col-3 mb-4">
-                        <div class="card">
-                            <div class="card-header">{{ video.name }}</div>
-                            <div class="card-body">
-                                <a href="{{ path('video_show', {id: video.id}) }}" class="btn btn-primary">Show</a>
-                            </div>
+        {# <section class="last-video">
+            <video controls src="/library/series/ShingekiNoKyojin/S04E04_war.mp4"></video>
+        </section> #}
+        <section class="list p-3">
+            {% for category in categories %}
+                <div class="row mb-5">
+                    <h2 class="col-12">{{ category.name }}</h2>
+                    {% for video in category.getVideos %}
+                        <div class="col-2 mb-4">
+                            <a href="{{ path('video_show', {id: video.id}) }}">
+                                {% if video.serie %}
+                                    {{ video.serie.name }} - S{{ video.serie.season }}E{{ video.episode }}
+                                {% else %}
+                                    {{ video.name }}
+                                {% endif %}
+                                <img src="/thumbnails/{{ video.id }}.png" alt="">
+                            </a>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </section>
     </div>
 {% endblock %}
 

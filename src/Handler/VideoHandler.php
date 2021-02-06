@@ -6,15 +6,18 @@ use App\Entity\Serie;
 use App\Entity\Library;
 use DateTimeImmutable;
 use App\Entity\Category;
+use App\Provider\ImdbProvider;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VideoHandler
 {
     protected EntityManagerInterface $em;
+    protected ImdbProvider $imdbProvider;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, ImdbProvider $imdbProvider)
     {
         $this->em = $em;
+        $this->imdbProvider = $imdbProvider;
     }
 
     public function saveVideoList(Category $category, array $videoList): bool
@@ -25,7 +28,6 @@ class VideoHandler
 
         if ('featured_film' === $category->getType()) {
             $this->saveVideoListInLibrary($category, $videoList);
-            $this->em->flush();
         }
 
         if ('serie' === $category->getType()) {
@@ -38,7 +40,6 @@ class VideoHandler
                     );
                 }
             }
-            $this->em->flush();
         }
 
         return true;
@@ -52,7 +53,7 @@ class VideoHandler
             );
 
             if (true === $videoExists) {
-                return;
+                continue;
             }
 
             $library = (new Library())
@@ -71,26 +72,31 @@ class VideoHandler
             }
 
             $this->em->persist($library);
+            $this->em->flush();
+            $this->createVideoThumbnail($category, $library);
         }
     }
 
     private function saveSerie(string $serieName, int $seasonNumber): Serie
     {
+        $serieName = $this->addSpacesInName($serieName);
+
         $serie = $this->em->getRepository(Serie::class)->findOneBy(
             ['name' => $serieName, 'season' => $seasonNumber]
         );
 
-        if (!empty($serie)) {
+        if (true === (bool) $serie) {
             return $serie;
         }
 
         $serie = (new Serie())
-            ->setName($this->addSpacesInName($serieName))
+            ->setName($serieName)
             ->setSeason($seasonNumber)
             ->setActive(true)
             ->setCreatedAt(new DateTimeImmutable('now'))
             ->setUpdatedAt(new DateTimeImmutable('now'));
         $this->em->persist($serie);
+        $this->em->flush();
 
         return $serie;
     }
@@ -100,5 +106,20 @@ class VideoHandler
         return ltrim(
             preg_replace('/(?<!\ )[A-Z]/', ' $0', $name)
         );
+    }
+
+    private function createVideoThumbnail(Category $category, Library $library): bool
+    {
+        if ('serie' === $category->getType()) {
+            return $this->imdbProvider
+                ->search(
+                    $library->getSerie()->getName()
+                )
+                ->saveMainPhoto($library->getId());
+        }
+
+        return $this->imdbProvider
+            ->search($library->getName())
+            ->saveMainPhoto($library->getId());
     }
 }

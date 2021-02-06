@@ -1,6 +1,11 @@
 @import 'variables.scss';
 @import "~bootstrap/scss/bootstrap";
 @import 'material-icons/iconfont/material-icons.scss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
 
 body {
     background-color: $backgroundColor;
@@ -23,6 +28,10 @@ li {
 .row {
     margin: 0;
     padding: 0;
+}
+
+img {
+    max-width: 100%;
 }
 
 .btn {
