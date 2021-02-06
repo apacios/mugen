@@ -67,7 +67,7 @@ class Library
      * @ORM\ManyToOne(targetEntity=Serie::class, inversedBy="videos")
      * @ORM\JoinColumn(nullable=true)
      */
-    private Serie $serie;
+    private ?Serie $serie;
 
     /**
      * @var int
