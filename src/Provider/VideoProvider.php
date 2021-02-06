@@ -26,14 +26,16 @@ class VideoProvider
             $fileInformations = [
                 'fileName' => \str_replace('.' . $file->getExtension(), '', $file->getBaseName()),
                 'baseName' => $file->getBaseName(),
-                'pathName' => $file->getPathName(),
+                'pathName' => $this->getRelativePath($file->getPathName()),
                 'extension' => $file->getExtension(),
+                'episode' => 0,
             ];
-            $pathInformations = $this->getVideoFolderPathInformations($fromPath, $file->getPath());
+            $pathInformations = $this->getVideoFolderPathInformations($fromPath, $file->getPath(), $file->getPathName());
 
             if (empty($pathInformations)) {
                 $videoList['root'][] = $fileInformations;
             } else {
+                $fileInformations['episode'] = $pathInformations['episode'];
                 $videoList[$pathInformations['serie']][$pathInformations['season']][] = $fileInformations;
             }
         }
@@ -48,10 +50,10 @@ class VideoProvider
      * @param string $filePath
      * @return array
      */
-    private function getVideoFolderPathInformations(string $fromPath, string $filePath): array
+    private function getVideoFolderPathInformations(string $fromPath, string $folderPath, string $filePath): array
     {
         $folderName = \ltrim(
-            \str_replace($fromPath, '', $filePath),
+            \str_replace($fromPath, '', $folderPath),
             '/'
         );
 
@@ -59,14 +61,17 @@ class VideoProvider
             return [];
         }
 
-        $nameAndSeason = \explode('/', $folderName);
-        if (empty($nameAndSeason[1])) {
-            $nameAndSeason[1] = 0;
-        }
+        preg_match('/(S\d{1,2})(E\d{1,3})/s', $filePath, $matches);
 
         return [
-            'serie' => $nameAndSeason[0],
-            'season' => (int) $nameAndSeason[1],
+            'serie' => $folderName,
+            'season' => ltrim($matches[1], 'S'),
+            'episode' => ltrim($matches[2], 'E'),
         ];
+    }
+
+    public function getRelativePath(string $path)
+    {
+        return \str_replace($this->folder_dir, '/library/', $path);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Serie;
-use App\Entity\Video;
+use App\Entity\Library;
 use DateTimeImmutable;
 use App\Entity\Category;
 use App\Handler\CategoryHandler;

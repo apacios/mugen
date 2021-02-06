@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Video;
+use App\Entity\Library;
 use App\Provider\ImdbProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +16,11 @@ class VideoController extends AbstractController
     /**
      * @Route("/{id}", name="video_show", methods={"GET"})
      */
-    public function show(Video $video, ImdbProvider $imdbProvider): Response
+    public function show(Library $video, ImdbProvider $imdbProvider): Response
     {
         return $this->render('video/show.html.twig', [
             'video' => $video,
-            'data' => $imdbProvider->search('Gurren Lag')->getData(),
+            'data' => $imdbProvider->search($video->getSerie()->getName())->getData(),
         ]);
     }
 }

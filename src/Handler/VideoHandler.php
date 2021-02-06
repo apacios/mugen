@@ -4,7 +4,7 @@ namespace App\Handler;
 
 use App\Builder\ThumbnailVideoBuilder;
 use App\Entity\Serie;
-use App\Entity\Video;
+use App\Entity\Library;
 use DateTimeImmutable;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManager;
@@ -36,7 +36,7 @@ class VideoHandler
 
                 if (null === $serie) {
                     $serie = (new Serie())
-                        ->setName($serieName)
+                        ->setName($this->addSpacesInName($serieName))
                         ->setSeason($seasonNumber)
                         ->setActive(true)
                         ->setCreatedAt(new DateTimeImmutable('now'))
@@ -46,7 +46,7 @@ class VideoHandler
                 }
 
                 if (empty($videos[0])) {
-                    $video = $this->entityManager->getRepository(Video::class)->findOneBy(
+                    $video = $this->entityManager->getRepository(Library::class)->findOneBy(
                         ['path' => $videos['pathName']]
                     );
 
@@ -54,23 +54,24 @@ class VideoHandler
                         continue;
                     }
 
-                    $newVideo = (new Video())
+                    $newVideo = (new Library())
                         ->setName($videos['fileName'])
                         ->setFileName($videos['baseName'])
-                        ->setCategories($category)
+                        ->setCategory($category)
                         ->setSerie($serie)
+                        ->setEpisode($videos['episode'])
                         ->setPath($videos['pathName'])
                         ->setActive(true)
                         ->setCreatedAt(new DateTimeImmutable('now'))
                         ->setUpdatedAt(new DateTimeImmutable('now'));
                     $this->entityManager->persist($newVideo);
                     $this->entityManager->flush();
-                    $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
+                    // $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
                     continue;
                 }
 
                 foreach ($videos as $videoData) {
-                    $video = $this->entityManager->getRepository(Video::class)->findOneBy(
+                    $video = $this->entityManager->getRepository(Library::class)->findOneBy(
                         ['path' => $videoData['pathName']]
                     );
 
@@ -78,22 +79,30 @@ class VideoHandler
                         continue;
                     }
 
-                    $newVideo = (new Video())
+                    $newVideo = (new Library())
                         ->setName($videoData['fileName'])
                         ->setFileName($videoData['baseName'])
-                        ->setCategories($category)
+                        ->setCategory($category)
                         ->setSerie($serie)
+                        ->setEpisode($videoData['episode'])
                         ->setPath($videoData['pathName'])
                         ->setActive(true)
                         ->setCreatedAt(new DateTimeImmutable('now'))
                         ->setUpdatedAt(new DateTimeImmutable('now'));
                     $this->entityManager->persist($newVideo);
                     $this->entityManager->flush();
-                    $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
+                    // $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
                 }
             }
         }
 
         return true;
+    }
+
+    private function addSpacesInName(string $name)
+    {
+        return ltrim(
+            preg_replace('/(?<!\ )[A-Z]/', ' $0', $name)
+        );
     }
 }

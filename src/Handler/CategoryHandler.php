@@ -30,6 +30,7 @@ class CategoryHandler
             ->setName($categoryName)
             ->setPath($folderDir . $categoryName)
             ->setIcon('smart_display')
+            ->setType('N/C')
             ->setCreatedAt(new DateTimeImmutable('now'));
 
         $this->entityManager->persist($category);

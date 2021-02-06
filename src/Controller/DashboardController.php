@@ -6,7 +6,7 @@ use App\Provider\ImdbProvider;
 use App\Provider\VideoProvider;
 use App\Builder\VideoYamlBuilder;
 use App\Provider\CategoryProvider;
-use App\Repository\VideoRepository;
+use App\Repository\LibraryRepository;
 use App\Builder\CategoryYmalBuilder;
 use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,12 +21,12 @@ class DashboardController extends AbstractController
     /**
      * @Route("/", name="dashboard_index")
      */
-    public function index(CategoryRepository $categoryRepository, VideoRepository $videoRepository, ImdbProvider $imdbProvider): Response
+    public function index(CategoryRepository $categoryRepository, LibraryRepository $LibraryRepository, VideoProvider $videoProvider): Response
     {
-        dump($imdbProvider->search('matrix')->getData());
+        ($videoProvider->getVideoListFromCategory('series'));
         return $this->render('dashboard/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
-            'videos' => $videoRepository->findAll(),
+            'videos' => $LibraryRepository->findAll(),
         ]);
     }
 }

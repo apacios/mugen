@@ -115,3 +115,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# personal
+alias cronlog="tail -f /var/log/cron.log"

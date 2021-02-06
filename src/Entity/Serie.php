@@ -30,7 +30,7 @@ class Serie
     private $season;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="serie")
+     * @ORM\OneToMany(targetEntity=Library::class, mappedBy="serie")
      */
     private $videos;
 
@@ -91,22 +91,22 @@ class Serie
         return $this->videos;
     }
 
-    public function addVideo(Video $video): self
+    public function addVideo(Library $library): self
     {
-        if (!$this->videos->contains($video)) {
-            $this->videos[] = $video;
-            $video->setSerie($this);
+        if (!$this->videos->contains($library)) {
+            $this->videos[] = $library;
+            $library->setSerie($this);
         }
 
         return $this;
     }
 
-    public function removeVideo(Video $video): self
+    public function removeVideo(Library $library): self
     {
-        if ($this->videos->removeElement($video)) {
+        if ($this->videos->removeElement($library)) {
             // set the owning side to null (unless already changed)
-            if ($video->getSerie() === $this) {
-                $video->setSerie(null);
+            if ($library->getSerie() === $this) {
+                $library->setSerie(null);
             }
         }
 

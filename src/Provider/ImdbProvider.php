@@ -9,7 +9,7 @@ use Imdb\TitleSearch;
 class ImdbProvider
 {
     protected Config $config;
-    protected Title $result;
+    protected $result;
 
     public function __construct()
     {
@@ -20,7 +20,9 @@ class ImdbProvider
     public function search(string $videoTitle): self
     {
         $search = new TitleSearch($this->config);
-        $this->result = $search->search($videoTitle, null, 1)[0];
+        $this->result = $this->getOneElement(
+            $search->search($videoTitle, [TitleSearch::MOVIE, TitleSearch::TV_SERIES], 1)
+        );
 
         return $this;
     }
@@ -28,7 +30,12 @@ class ImdbProvider
     public function getData(): array
     {
         if (empty($this->result)) {
-            return [];
+            return [
+                'rate' => '',
+                'storyline' => '',
+                'mainPhoto' => '',
+                'mainPictures' => '',
+            ];
         }
 
         return [
@@ -37,5 +44,14 @@ class ImdbProvider
             'mainPhoto' => $this->result->photo(),
             'mainPictures' => $this->result->mainPictures(),
         ];
+    }
+
+    private function getOneElement(array $results)
+    {
+        if (empty($results[0])) {
+            return [];
+        }
+
+        return $results[0];
     }
 }

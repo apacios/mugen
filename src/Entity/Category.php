@@ -32,6 +32,11 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $type;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $icon;
 
     /**
@@ -40,7 +45,7 @@ class Category
     private $createdAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="Categories")
+     * @ORM\OneToMany(targetEntity=Library::class, mappedBy="Categories")
      */
     private $videos;
 
@@ -78,6 +83,18 @@ class Category
         return $this;
     }
 
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
     public function getIcon(): ?string
     {
         return $this->icon;
@@ -110,22 +127,22 @@ class Category
         return $this->videos;
     }
 
-    public function addVideo(Video $video): self
+    public function addVideo(Library $library): self
     {
-        if (!$this->videos->contains($video)) {
-            $this->videos[] = $video;
-            $video->setCategories($this);
+        if (!$this->videos->contains($library)) {
+            $this->videos[] = $library;
+            $library->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removeVideo(Video $video): self
+    public function removeVideo(Library $library): self
     {
-        if ($this->videos->removeElement($video)) {
+        if ($this->videos->removeElement($library)) {
             // set the owning side to null (unless already changed)
-            if ($video->getCategories() === $this) {
-                $video->setCategories(null);
+            if ($library->getCategory() === $this) {
+                $library->setCategory(null);
             }
         }
 

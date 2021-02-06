@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\VideoRepository;
+use App\Repository\LibraryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=VideoRepository::class)
+ * @ORM\Entity(repositoryClass=LibraryRepository::class)
  */
-class Video
+class Library
 {
     /**
      * @ORM\Id
@@ -51,13 +51,18 @@ class Video
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="videos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Categories;
+    private $category;
 
     /**
      * @ORM\ManyToOne(targetEntity=Serie::class, inversedBy="videos")
      * @ORM\JoinColumn(nullable=false)
      */
     private $serie;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $episode;
 
     public function getId(): ?int
     {
@@ -136,14 +141,14 @@ class Video
         return $this;
     }
 
-    public function getCategories(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->Categories;
+        return $this->category;
     }
 
-    public function setCategories(?Category $Categories): self
+    public function setCategory(?Category $category): self
     {
-        $this->Categories = $Categories;
+        $this->category = $category;
 
         return $this;
     }
@@ -156,6 +161,18 @@ class Video
     public function setSerie(?Serie $serie): self
     {
         $this->serie = $serie;
+
+        return $this;
+    }
+
+    public function getEpisode(): int
+    {
+        return $this->episode;
+    }
+
+    public function setEpisode(int $episode): self
+    {
+        $this->episode = $episode;
 
         return $this;
     }
