@@ -1,0 +1,34 @@
+@import 'variables.scss';
+
+#video {
+    h1 {
+        color: $primaryColor;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-style: italic;
+        text-decoration: overline;
+    }
+    video {
+        position: absolute;
+        top: 0;
+        height: 110%;
+        width: 100%;
+    }
+    .data-title {
+        position: absolute;
+        top: 50vh;
+        width: 50%;
+        padding: 2rem;
+        color: #fff;
+    }
+    .data-desc {
+        position: absolute;
+        bottom: 10rem;
+        right: 2rem;
+        width: 30%;
+        padding: 2rem;
+        color: #fff;
+        font-size: 18px;
+        background: rgba(0, 0, 0, 0.6);
+    }
+}

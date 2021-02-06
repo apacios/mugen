@@ -1,2 +1,49 @@
+@import 'variables.scss';
 @import "~bootstrap/scss/bootstrap";
 @import 'material-icons/iconfont/material-icons.scss';
+
+body {
+    background-color: $backgroundColor;
+    margin-top: 5rem;
+}
+
+a {
+    text-decoration: none;
+    color: #fff !important;
+}
+
+li {
+    list-style-type: none;
+}
+
+.material-icons {
+    vertical-align: middle;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+}
+
+.btn {
+    &.btn-primary {
+        background-color: $primaryColor;
+        border-color: $primaryColor;
+        border-radius: 0;
+    }
+}
+
+video {
+    max-width: 100%;
+}
+
+header {
+    background-color: $backgroundColor;
+
+    .navbar-brand {
+        color: $primaryColor;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: overline;
+    }
+}

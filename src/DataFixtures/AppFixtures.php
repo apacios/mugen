@@ -13,13 +13,14 @@ class AppFixtures extends Fixture
     {
         $categories = ['films', 'series'];
         $categoryTypes = ['featured_film', 'serie'];
+        $categoryIcon = ['movie', 'tv'];
 
         foreach ($categories as $key => $categoryName) {
             $category = new Category();
             $category
                 ->setName($categoryName)
                 ->setPath('/var/www/html/public/library/' . $categoryName . '/')
-                ->setIcon('smart_display')
+                ->setIcon($categoryIcon[$key])
                 ->setType($categoryTypes[$key])
                 ->setCreatedAt(new \DateTimeImmutable('NOW'));
                 $manager->persist($category);

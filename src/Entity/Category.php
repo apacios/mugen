@@ -52,13 +52,13 @@ class Category
 
     /**
      * @var Collection<Library>
-     * @ORM\OneToMany(targetEntity=Library::class, mappedBy="Categories")
+     * @ORM\OneToMany(targetEntity=Library::class, mappedBy="category")
      */
-    private Collection $videos;
+    private Collection $library;
 
     public function __construct()
     {
-        $this->videos = new ArrayCollection();
+        $this->library = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -132,13 +132,13 @@ class Category
      */
     public function getVideos(): Collection
     {
-        return $this->videos;
+        return $this->library;
     }
 
     public function addVideo(Library $library): self
     {
-        if (!$this->videos->contains($library)) {
-            $this->videos[] = $library;
+        if (!$this->library->contains($library)) {
+            $this->library[] = $library;
             $library->setCategory($this);
         }
 
@@ -147,7 +147,7 @@ class Category
 
     public function removeVideo(Library $library): self
     {
-        if ($this->videos->removeElement($library)) {
+        if ($this->library->removeElement($library)) {
             // set the owning side to null (unless already changed)
             if ($library->getCategory() === $this) {
                 $library->setCategory(null);

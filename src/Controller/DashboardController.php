@@ -16,11 +16,10 @@ class DashboardController extends AbstractController
     /**
      * @Route("/", name="dashboard_index")
      */
-    public function index(CategoryRepository $categoryRepository, LibraryRepository $LibraryRepository): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
         return $this->render('dashboard/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
-            'videos' => $LibraryRepository->findAll(),
         ]);
     }
 }

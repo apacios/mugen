@@ -1,30 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}Welcome{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('dashboard') }}
+{% endblock %}
 
 {% block body %}
-    <div class="card">
-        <div class="card-header">Categories</div>
-        <div class="card-body">
-            {% for category in categories %}
-                <p>{{ category.name }}</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="row">
-        {% for key, video in videos %}
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-header">{{ video.serie.name|default('') }} - {{ video.name }}</div>
-                    <div class="card-body">
-                        <a href="{{ path('video_show', {id: video.id})}}" class="btn btn-primary">{{ video.name }}</a>
-                        {# <video poster="/thumbnails/{{ video.id }}.jpg" controls width="250" preload="true">
-                            <source src="{{ video.path }}" type="video/avi">
-                        </video> #}
+    <div id="dashboard" class="page">
+        {% for category in categories %}
+            <div class="row mb-5">
+                <h2 class="col-12">{{ category.name }}</h2>
+                {% for video in category.getVideos %}
+                    <div class="col-3 mb-4">
+                        <div class="card">
+                            <div class="card-header">{{ video.name }}</div>
+                            <div class="card-body">
+                                <a href="{{ path('video_show', {id: video.id}) }}" class="btn btn-primary">Show</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('dashboard') }}
 {% endblock %}
