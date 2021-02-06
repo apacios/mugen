@@ -18,9 +18,19 @@ class VideoController extends AbstractController
      */
     public function show(Library $video, ImdbProvider $imdbProvider): Response
     {
+        $imdbSearch = '';
+
+        if ('serie' === $video->getCategory()->getType()) {
+            $imdbSearch = $video->getSerie()->getName();
+        }
+
+        if ('featured_film' === $video->getCategory()->getType()) {
+            $imdbSearch = $video->getName();
+        }
+
         return $this->render('video/show.html.twig', [
             'video' => $video,
-            'data' => $imdbProvider->search($video->getSerie()->getName())->getData(),
+            'data' => $imdbProvider->search($imdbSearch)->getData(),
         ]);
     }
 }

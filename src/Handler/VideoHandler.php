@@ -2,104 +2,100 @@
 
 namespace App\Handler;
 
-use App\Builder\ThumbnailVideoBuilder;
 use App\Entity\Serie;
 use App\Entity\Library;
 use DateTimeImmutable;
 use App\Entity\Category;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VideoHandler
 {
-    protected EntityManagerInterface $entityManager;
-    protected ThumbnailVideoBuilder $thumbnailVideoBuilder;
+    protected EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $entityManager, ThumbnailVideoBuilder $thumbnailVideoBuilder)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->entityManager = $entityManager;
-        $this->thumbnailVideoBuilder = $thumbnailVideoBuilder;
+        $this->em = $em;
     }
 
-    public function saveVideoList(string $categoryName, array $videoList): bool
+    public function saveVideoList(Category $category, array $videoList): bool
     {
-        $category = $this->entityManager->getRepository(Category::class)->findOneBy(
-            ['name' => $categoryName]
-        );
+        if (empty($videoList)) {
+            return true;
+        }
 
-        foreach ($videoList as $serieName => $seasons) {
-            foreach ($seasons as $seasonNumber => $videos) {
+        if ('featured_film' === $category->getType()) {
+            $this->saveVideoListInLibrary($category, $videoList);
+            $this->em->flush();
+        }
 
-                $serie = $this->entityManager->getRepository(Serie::class)->findOneBy(
-                    ['name' => $serieName, 'season' => $seasonNumber]
-                );
-
-                if (null === $serie) {
-                    $serie = (new Serie())
-                        ->setName($this->addSpacesInName($serieName))
-                        ->setSeason($seasonNumber)
-                        ->setActive(true)
-                        ->setCreatedAt(new DateTimeImmutable('now'))
-                        ->setUpdatedAt(new DateTimeImmutable('now'));
-                    $this->entityManager->persist($serie);
-                    $this->entityManager->flush();
-                }
-
-                if (empty($videos[0])) {
-                    $video = $this->entityManager->getRepository(Library::class)->findOneBy(
-                        ['path' => $videos['pathName']]
+        if ('serie' === $category->getType()) {
+            foreach ($videoList as $serieName => $seasons) {
+                foreach ($seasons as $seasonNumber => $videos) {
+                    $this->saveVideoListInLibrary(
+                        $category,
+                        $videos,
+                        $this->saveSerie($serieName, (int) $seasonNumber)
                     );
-
-                    if (null !== $video) {
-                        continue;
-                    }
-
-                    $newVideo = (new Library())
-                        ->setName($videos['fileName'])
-                        ->setFileName($videos['baseName'])
-                        ->setCategory($category)
-                        ->setSerie($serie)
-                        ->setEpisode($videos['episode'])
-                        ->setPath($videos['pathName'])
-                        ->setActive(true)
-                        ->setCreatedAt(new DateTimeImmutable('now'))
-                        ->setUpdatedAt(new DateTimeImmutable('now'));
-                    $this->entityManager->persist($newVideo);
-                    $this->entityManager->flush();
-                    // $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
-                    continue;
-                }
-
-                foreach ($videos as $videoData) {
-                    $video = $this->entityManager->getRepository(Library::class)->findOneBy(
-                        ['path' => $videoData['pathName']]
-                    );
-
-                    if (null !== $video) {
-                        continue;
-                    }
-
-                    $newVideo = (new Library())
-                        ->setName($videoData['fileName'])
-                        ->setFileName($videoData['baseName'])
-                        ->setCategory($category)
-                        ->setSerie($serie)
-                        ->setEpisode($videoData['episode'])
-                        ->setPath($videoData['pathName'])
-                        ->setActive(true)
-                        ->setCreatedAt(new DateTimeImmutable('now'))
-                        ->setUpdatedAt(new DateTimeImmutable('now'));
-                    $this->entityManager->persist($newVideo);
-                    $this->entityManager->flush();
-                    // $this->thumbnailVideoBuilder->generate($newVideo->getId(), $newVideo->getPath());
                 }
             }
+            $this->em->flush();
         }
 
         return true;
     }
 
-    private function addSpacesInName(string $name)
+    private function saveVideoListInLibrary(Category $category, array $videoList, Serie $serie = null): void
+    {
+        foreach ($videoList as $video) {
+            $videoExists = (bool) $this->em->getRepository(Library::class)->findOneBy(
+                ['path' => $video['pathName']]
+            );
+
+            if (true === $videoExists) {
+                return;
+            }
+
+            $library = (new Library())
+                ->setName($this->addSpacesInName($video['fileName']))
+                ->setFileName($video['baseName'])
+                ->setCategory($category)
+                ->setPath($video['pathName'])
+                ->setActive(true)
+                ->setCreatedAt(new DateTimeImmutable('now'))
+                ->setUpdatedAt(new DateTimeImmutable('now'));
+
+            if ('serie' === $category->getType()) {
+                $library
+                    ->setSerie($serie)
+                    ->setEpisode((int) $video['episode']);
+            }
+
+            $this->em->persist($library);
+        }
+    }
+
+    private function saveSerie(string $serieName, int $seasonNumber): Serie
+    {
+        $serie = $this->em->getRepository(Serie::class)->findOneBy(
+            ['name' => $serieName, 'season' => $seasonNumber]
+        );
+
+        if (!empty($serie)) {
+            return $serie;
+        }
+
+        $serie = (new Serie())
+            ->setName($this->addSpacesInName($serieName))
+            ->setSeason($seasonNumber)
+            ->setActive(true)
+            ->setCreatedAt(new DateTimeImmutable('now'))
+            ->setUpdatedAt(new DateTimeImmutable('now'));
+        $this->em->persist($serie);
+
+        return $serie;
+    }
+
+    private function addSpacesInName(string $name): string
     {
         return ltrim(
             preg_replace('/(?<!\ )[A-Z]/', ' $0', $name)

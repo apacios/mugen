@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\SerieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SerieRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=SerieRepository::class)
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Serie
 {
     /**
+     * @var int
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,38 +22,46 @@ class Serie
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
+     * @var int
      * @ORM\Column(type="integer")
      */
-    private $season;
+    private int $season;
 
     /**
+     * @var Collection<Library>
      * @ORM\OneToMany(targetEntity=Library::class, mappedBy="serie")
      */
-    private $videos;
+    private Collection $videos;
 
     /**
+     * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $active;
+    private bool $active;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeImmutable
+     * @ORM\Column(type="datetime_immutable")
      */
-    private $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeImmutable
+     * @ORM\Column(type="datetime_immutable")
      */
-    private $updatedAt;
+    private DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
         $this->videos = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -84,7 +94,7 @@ class Serie
     }
 
     /**
-     * @return Collection|Video[]
+     * @return Collection|Library[]
      */
     public function getVideos(): Collection
     {
@@ -125,24 +135,24 @@ class Serie
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

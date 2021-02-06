@@ -2,15 +2,9 @@
 
 namespace App\Command;
 
-use App\Entity\Serie;
-use App\Entity\Library;
-use DateTimeImmutable;
 use App\Entity\Category;
-use App\Handler\CategoryHandler;
 use App\Handler\VideoHandler;
 use App\Provider\VideoProvider;
-use App\Provider\CategoryProvider;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,22 +14,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncVideoCommand extends Command
 {
     protected static $defaultName = 'app:sync-videos';
-    protected CategoryProvider $categoryProvider;
     protected VideoProvider $videoProvider;
-    protected CategoryHandler $categoryHandler;
     protected VideoHandler $videoHandler;
+    protected EntityManagerInterface $em;
 
-    public function __construct(CategoryProvider $categoryProvider, VideoProvider $videoProvider, CategoryHandler $categoryHandler, VideoHandler $videoHandler)
+    public function __construct(EntityManagerInterface $em, VideoProvider $videoProvider, VideoHandler $videoHandler)
     {
-        $this->categoryProvider = $categoryProvider;
+        $this->em = $em;
         $this->videoProvider = $videoProvider;
-        $this->categoryHandler = $categoryHandler;
         $this->videoHandler = $videoHandler;
 
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Sync videos');
     }
@@ -44,10 +36,9 @@ class SyncVideoCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        foreach ($this->categoryProvider->getCategoryList() as $categoryName) {
-            $videoList = $this->videoProvider->getVideoListFromCategory($categoryName);
-            $this->categoryHandler->saveCategory($categoryName);
-            $this->videoHandler->saveVideoList($categoryName, $videoList);
+        foreach ($this->em->getRepository(Category::class)->findAll() as $category) {
+            $videoList = $this->videoProvider->getVideoListFromCategory($category);
+            $this->videoHandler->saveVideoList($category, $videoList);
         }
 
         $io->success('Video synchronized');

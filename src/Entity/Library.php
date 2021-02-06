@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\LibraryRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\LibraryRepository;
 
 /**
  * @ORM\Entity(repositoryClass=LibraryRepository::class)
@@ -11,58 +12,74 @@ use Doctrine\ORM\Mapping as ORM;
 class Library
 {
     /**
+     * @var int
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $fileName;
+    private string $fileName;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $path;
+    private string $path;
 
     /**
+     * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $active;
+    private bool $active;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeImmutable
+     * @ORM\Column(type="datetime_immutable")
      */
-    private $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeImmutable
+     * @ORM\Column(type="datetime_immutable")
      */
-    private $updatedAt;
+    private DateTimeImmutable $updatedAt;
 
     /**
+     * @var Category
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="videos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $category;
+    private Category $category;
 
     /**
+     * @var Serie
      * @ORM\ManyToOne(targetEntity=Serie::class, inversedBy="videos")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $serie;
+    private Serie $serie;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $episode;
+    private int $episode;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -117,24 +134,24 @@ class Library
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -170,7 +187,7 @@ class Library
         return $this->episode;
     }
 
-    public function setEpisode(int $episode): self
+    public function setEpisode(?int $episode): self
     {
         $this->episode = $episode;
 

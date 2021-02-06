@@ -2,11 +2,8 @@
 
 namespace App\Provider;
 
-use FFMpeg\FFMpeg;
+use App\Entity\Category;
 use Nette\Utils\Finder;
-use FFMpeg\Format\Video\WebM;
-use FFMpeg\Coordinate\TimeCode;
-use FFMpeg\Coordinate\Dimension;
 
 class VideoProvider
 {
@@ -17,24 +14,29 @@ class VideoProvider
         $this->folder_dir = $_ENV['VIDEO_DIR'];
     }
 
-    public function getVideoListFromCategory(string $category): array
+    /**
+     * Found all videos available for a given category
+     *
+     * @param Category $category
+     * @return array
+     */
+    public function getVideoListFromCategory(Category $category): array
     {
-        $fromPath = $this->folder_dir . $category;
         $videoList = [];
 
-        foreach (Finder::findFiles('*')->from($fromPath) as $file) {
+        foreach (Finder::findFiles('*')->from($category->getPath()) as $file) {
             $fileInformations = [
                 'fileName' => \str_replace('.' . $file->getExtension(), '', $file->getBaseName()),
                 'baseName' => $file->getBaseName(),
                 'pathName' => $this->getRelativePath($file->getPathName()),
-                'extension' => $file->getExtension(),
-                'episode' => 0,
             ];
-            $pathInformations = $this->getVideoFolderPathInformations($fromPath, $file->getPath(), $file->getPathName());
 
-            if (empty($pathInformations)) {
-                $videoList['root'][] = $fileInformations;
-            } else {
+            if ('featured_film' === $category->getType()) {
+                $videoList[] = $fileInformations;
+            }
+
+            if ('serie' === $category->getType()) {
+                $pathInformations = $this->getSerieInformations($category->getPath(), $file->getPath(), $file->getPathName());
                 $fileInformations['episode'] = $pathInformations['episode'];
                 $videoList[$pathInformations['serie']][$pathInformations['season']][] = $fileInformations;
             }
@@ -44,13 +46,13 @@ class VideoProvider
     }
 
     /**
-     * getVideoFolderPathInformations
+     * Get informations for the serie from the video name (ex: S01E01)
      *
      * @param string $fromPath
      * @param string $filePath
      * @return array
      */
-    private function getVideoFolderPathInformations(string $fromPath, string $folderPath, string $filePath): array
+    private function getSerieInformations(string $fromPath, string $folderPath, string $filePath): array
     {
         $folderName = \ltrim(
             \str_replace($fromPath, '', $folderPath),
@@ -70,7 +72,7 @@ class VideoProvider
         ];
     }
 
-    public function getRelativePath(string $path)
+    public function getRelativePath(string $path): string
     {
         return \str_replace($this->folder_dir, '/library/', $path);
     }

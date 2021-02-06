@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -17,41 +18,48 @@ class Category
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $path;
+    private string $path;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private string $type;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $icon;
+    private string $icon;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var DateTimeImmutable
+     * @ORM\Column(type="datetime_immutable")
      */
     private $createdAt;
 
     /**
+     * @var Collection<Library>
      * @ORM\OneToMany(targetEntity=Library::class, mappedBy="Categories")
      */
-    private $videos;
+    private Collection $videos;
 
     public function __construct()
     {
         $this->videos = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -107,12 +115,12 @@ class Category
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -120,7 +128,7 @@ class Category
     }
 
     /**
-     * @return Collection|Video[]
+     * @return Collection|Library[]
      */
     public function getVideos(): Collection
     {

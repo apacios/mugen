@@ -9,7 +9,7 @@ use Imdb\TitleSearch;
 class ImdbProvider
 {
     protected Config $config;
-    protected $result;
+    protected ?Title $result;
 
     public function __construct()
     {
@@ -17,6 +17,12 @@ class ImdbProvider
         $this->config->language = 'fr-FR,fr,en-EN,en';
     }
 
+    /**
+     * Search video title on IMDB
+     *
+     * @param string $videoTitle
+     * @return self
+     */
     public function search(string $videoTitle): self
     {
         $search = new TitleSearch($this->config);
@@ -27,6 +33,11 @@ class ImdbProvider
         return $this;
     }
 
+    /**
+     * Get data from IMDB
+     *
+     * @return array
+     */
     public function getData(): array
     {
         if (empty($this->result)) {
@@ -46,10 +57,16 @@ class ImdbProvider
         ];
     }
 
-    private function getOneElement(array $results)
+    /**
+     * Get only one element
+     *
+     * @param array $results
+     * @return null|Title
+     */
+    private function getOneElement(array $results): ?Title
     {
         if (empty($results[0])) {
-            return [];
+            return null;
         }
 
         return $results[0];
