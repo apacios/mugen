@@ -9,7 +9,7 @@ use App\Entity\Category;
 use App\Provider\ImdbProvider;
 use Doctrine\ORM\EntityManagerInterface;
 
-class VideoHandler
+class LibraryHandler
 {
     protected EntityManagerInterface $em;
     protected ImdbProvider $imdbProvider;

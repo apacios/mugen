@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Category;
-use App\Handler\VideoHandler;
+use App\Handler\LibraryHandler;
 use App\Provider\VideoProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -15,14 +15,14 @@ class SyncVideoCommand extends Command
 {
     protected static $defaultName = 'app:sync-videos';
     protected VideoProvider $videoProvider;
-    protected VideoHandler $videoHandler;
+    protected LibraryHandler $libraryHandler;
     protected EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em, VideoProvider $videoProvider, VideoHandler $videoHandler)
+    public function __construct(EntityManagerInterface $em, VideoProvider $videoProvider, LibraryHandler $libraryHandler)
     {
         $this->em = $em;
         $this->videoProvider = $videoProvider;
-        $this->videoHandler = $videoHandler;
+        $this->libraryHandler = $libraryHandler;
 
         parent::__construct();
     }
@@ -38,7 +38,7 @@ class SyncVideoCommand extends Command
 
         foreach ($this->em->getRepository(Category::class)->findAll() as $category) {
             $videoList = $this->videoProvider->getVideoListFromCategory($category);
-            $this->videoHandler->saveVideoList($category, $videoList);
+            $this->libraryHandler->saveVideoList($category, $videoList);
         }
 
         $io->success('Video synchronized');
