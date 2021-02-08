@@ -4,7 +4,7 @@ APP_IP = `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{e
 
 ##@ Application
 
-app-launch: docker-up docker-setup app-browser ## Start & setup containers and launch browser
+app-launch: docker-up docker-setup app-fixtures app-browser ## Start & setup containers and launch browser
 
 app-test: ## Use PHP Static Analysis Tool
 	docker-compose exec app sh -c "vendor/bin/phpstan analyse -c phpstan.neon src --level 7"
@@ -23,8 +23,6 @@ app-composer: ## Install composer packages
 
 app-clear_cache: ## Clear Symfony cache
 	docker-compose exec app sh -c "php bin/console cache:clear"
-
-app-deploy: app-composer app-build_db app-fixtures ## Start docker containers for production composer build_db fixtures
 
 ##@ Docker
 

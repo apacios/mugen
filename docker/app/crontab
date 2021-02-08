@@ -1,0 +1,2 @@
+*/30 */1 * * * /var/www/html/docker/app/convert.sh >> /var/log/cron.log 2>&1
+* */2 * * * /usr/local/bin/php /var/www/html/bin/console app:sync-app >> /var/log/cron.log 2>&1

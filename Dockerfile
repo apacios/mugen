@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install -y \
   libzip-dev  \
   libpng-dev \
   libjpeg-dev \
-  libfreetype6-dev
+  libfreetype6-dev \
+  ffmpeg \
+  cron
 
 RUN apt remove yarn
 RUN docker-php-ext-configure zip
@@ -30,7 +32,8 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
   && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt update \
-  && apt install yarn
+  && apt install yarn \
+  && apt install -y nano
 
 RUN yes | pecl install xdebug
 RUN docker-php-ext-enable xdebug
@@ -40,8 +43,17 @@ COPY docker/app/app.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/app/app.ini /usr/local/etc/php/conf.d/app.ini
 COPY docker/app/.bashrc /root/.bashrc
 
+COPY docker/app/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab
+RUN crontab /etc/cron.d/crontab
+RUN touch /var/log/cron.log
+RUN service cron start
+
+COPY docker/app/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
 CMD ["apache2-foreground"]
-ENTRYPOINT ["docker-php-entrypoint"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 #--- Production build
 FROM base as prod
@@ -53,7 +65,6 @@ COPY docker/app/.env.local .env.local
 RUN composer install --no-interaction --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/var
 RUN chmod -R ug+rwX var/
-
 
 CMD ["apache2-foreground"]
 ENTRYPOINT ["docker-php-entrypoint"]

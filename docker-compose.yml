@@ -30,6 +30,16 @@ services:
     volumes:
       - db:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    environment:
+      PMA_HOST: mugen_db
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+
   maildev:
     container_name: mugen_maildev
     image: djfarrelly/maildev

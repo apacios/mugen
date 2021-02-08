@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('dashboard') }}
+{% endblock %}
+
+{% block body %}
+    <div id="dashboard" class="page">
+        {# <section class="last-video">
+            <video controls src="/library/series/ShingekiNoKyojin/S04E04_war.mp4"></video>
+        </section> #}
+        <section class="list p-3">
+            {% for category in categories %}
+                <div class="row mb-5">
+                    <h2 class="col-12">{{ category.name }}</h2>
+                    {% for video in category.getVideos %}
+                        <div class="col-2 mb-4">
+                            <a href="{{ path('video_show', {id: video.id}) }}">
+                                {% if video.serie %}
+                                    {{ video.serie.name }} - S{{ video.serie.season }}E{{ video.episode }}
+                                {% else %}
+                                    {{ video.name }}
+                                {% endif %}
+                                <img src="/thumbnails/{{ video.id }}.png" alt="">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('dashboard') }}
+{% endblock %}

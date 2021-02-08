@@ -1,0 +1,27 @@
+@import 'variables.scss';
+
+#dashboard {
+    h2 {
+        text-transform: capitalize;
+        color: #fff;
+        font-style: italic;
+        font-size: 24px;
+        margin-bottom: 1rem;
+    }
+    // .last-video {
+    //     position: absolute;
+    //     top: 0;
+    //     &::after {
+    //         content: "";
+    //         display: block;
+    //         width: 100%;
+    //         height: 25rem;
+    //         position: absolute;
+    //         bottom: 0;
+    //         background: linear-gradient(rgba(0,0,0,0), $backgroundColor);
+    //     }
+    // }
+    // .list {
+    //     margin-top: 25rem;
+    // }
+}

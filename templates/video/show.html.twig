@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ video.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('video') }}
+{% endblock %}
+
+{% block body %}
+    <div id="video" class="page">
+        <video preload="true" controls src="{{ video.path }}"></video>
+        <div class="data-title">
+            {% if video.serie %}
+                <h1>{{ video.serie.name }}</h1>
+                <h2>S{{ video.serie.season }} E{{ video.episode }}</h2>
+            {% else %}
+                <h1>{{ video.name }}</h1>
+            {% endif %}
+            <p>Rate : {{ data_imdb.rate }}</p>
+        </div>
+        <div class="data-desc text-justify">
+            <p>{{ data_imdb.storyline }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('video') }}
+{% endblock %}
