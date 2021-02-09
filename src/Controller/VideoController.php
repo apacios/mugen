@@ -28,8 +28,6 @@ class VideoController extends AbstractController
             $imdbSearch = $video->getName();
         }
 
-        dump($imdbProvider->search($imdbSearch)->getData());
-
         return $this->render('video/show.html.twig', [
             'video' => $video,
             'data_imdb' => $imdbProvider->search($imdbSearch)->getData(),

@@ -56,10 +56,17 @@ class Category
      */
     private Collection $library;
 
+    /**
+     * @var Collection<Serie>
+     * @ORM\OneToMany(targetEntity=Serie::class, mappedBy="category")
+     */
+    private Collection $series;
+
     public function __construct()
     {
         $this->library = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+        $this->series = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -151,6 +158,36 @@ class Category
             // set the owning side to null (unless already changed)
             if ($library->getCategory() === $this) {
                 $library->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Serie[]
+     */
+    public function getSeries(): Collection
+    {
+        return $this->series;
+    }
+
+    public function addSeries(Serie $series): self
+    {
+        if (!$this->series->contains($series)) {
+            $this->series[] = $series;
+            $series->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeries(Serie $series): self
+    {
+        if ($this->series->removeElement($series)) {
+            // set the owning side to null (unless already changed)
+            if ($series->getCategory() === $this) {
+                $series->setCategory(null);
             }
         }
 

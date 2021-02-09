@@ -9,25 +9,29 @@
 
 {% block body %}
     <div id="dashboard" class="page">
-        {# <section class="last-video">
-            <video controls src="/library/series/ShingekiNoKyojin/S04E04_war.mp4"></video>
-        </section> #}
         <section class="list p-3">
-            {% for category in categories %}
+            {% for categoryInfo in library %}
                 <div class="row mb-5">
-                    <h2 class="col-12">{{ category.name }}</h2>
-                    {% for video in category.getVideos %}
-                        <div class="col-2 mb-4">
-                            <a href="{{ path('video_show', {id: video.id}) }}">
-                                {% if video.serie %}
-                                    {{ video.serie.name }} - S{{ video.serie.season }}E{{ video.episode }}
-                                {% else %}
-                                    {{ video.name }}
-                                {% endif %}
-                                <img src="/thumbnails/{{ video.id }}.png" alt="">
-                            </a>
-                        </div>
-                    {% endfor %}
+                    <h2 class="col-12">{{ categoryInfo.category }}</h2>
+
+                    {% if 'featured_film' == categoryInfo.type %}
+                        {% for video in categoryInfo.library %}
+                            <div class="col-2 mb-4">
+                                <a href="{{ path('video_show', {id: video.id}) }}">
+                                    {{ video.name }} <img src="/thumbnails/ff{{ video.id }}.png" alt="">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% elseif 'serie' == categoryInfo.type %}
+                        {% for serie in categoryInfo.library %}
+                            <div class="col-2 mb-4">
+                                <a href="{{ path('serie_show', {id: serie.id}) }}">
+                                    {{ serie.name }} <img src="/thumbnails/s{{ serie.id }}.png" alt="">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
                 </div>
             {% endfor %}
         </section>

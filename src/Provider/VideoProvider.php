@@ -38,7 +38,8 @@ class VideoProvider
             if ('serie' === $category->getType()) {
                 $pathInformations = $this->getSerieInformations($category->getPath(), $file->getPath(), $file->getPathName());
                 $fileInformations['episode'] = $pathInformations['episode'];
-                $videoList[$pathInformations['serie']][$pathInformations['season']][] = $fileInformations;
+                $fileInformations['season'] = $pathInformations['season'];
+                $videoList[$pathInformations['serie']][] = $fileInformations;
             }
         }
 

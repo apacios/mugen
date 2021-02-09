@@ -57,9 +57,9 @@ class ImdbProvider
         ];
     }
 
-    public function saveMainPhoto(int $videoId): bool
+    public function saveMainPhoto(string $thumbnailName): bool
     {
-        return $this->result->savephoto('/var/www/html/public/thumbnails/' . $videoId . '.png', false);
+        return $this->result->savephoto('/var/www/html/public/thumbnails/' . $thumbnailName . '.png', false);
     }
 
     /**
