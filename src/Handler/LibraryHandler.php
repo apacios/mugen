@@ -31,14 +31,12 @@ class LibraryHandler
         }
 
         if ('serie' === $category->getType()) {
-            foreach ($videoList as $serieName => $seasons) {
-                foreach ($seasons as $seasonNumber => $videos) {
-                    $this->saveVideoListInLibrary(
-                        $category,
-                        $videos,
-                        $this->saveSerie($serieName, (int) $seasonNumber)
-                    );
-                }
+            foreach ($videoList as $serieName => $videos) {
+                $this->saveVideoListInLibrary(
+                    $category,
+                    $videos,
+                    $this->saveSerie($category, $serieName)
+                );
             }
         }
 
@@ -68,21 +66,26 @@ class LibraryHandler
             if ('serie' === $category->getType()) {
                 $library
                     ->setSerie($serie)
-                    ->setEpisode((int) $video['episode']);
+                    ->setEpisode((int) $video['episode'])
+                    ->setSeason((int) $video['season']);
+                $serie->setUpdatedAt(new DateTimeImmutable('now'));
             }
 
             $this->em->persist($library);
             $this->em->flush();
-            $this->createVideoThumbnail($category, $library);
+
+            if ('featured_film' === $category->getType()) {
+                $this->createVideoThumbnail($library->getName(), 'ff' . $library->getId());
+            }
         }
     }
 
-    private function saveSerie(string $serieName, int $seasonNumber): Serie
+    private function saveSerie(Category $category, string $serieName): Serie
     {
         $serieName = $this->addSpacesInName($serieName);
 
         $serie = $this->em->getRepository(Serie::class)->findOneBy(
-            ['name' => $serieName, 'season' => $seasonNumber]
+            ['name' => $serieName]
         );
 
         if (true === (bool) $serie) {
@@ -91,12 +94,13 @@ class LibraryHandler
 
         $serie = (new Serie())
             ->setName($serieName)
-            ->setSeason($seasonNumber)
+            ->setCategory($category)
             ->setActive(true)
             ->setCreatedAt(new DateTimeImmutable('now'))
             ->setUpdatedAt(new DateTimeImmutable('now'));
         $this->em->persist($serie);
         $this->em->flush();
+        $this->createVideoThumbnail($serieName, 's' . $serie->getId());
 
         return $serie;
     }
@@ -108,18 +112,10 @@ class LibraryHandler
         );
     }
 
-    private function createVideoThumbnail(Category $category, Library $library): bool
+    private function createVideoThumbnail(string $title, string $thumbnailName): bool
     {
-        if ('serie' === $category->getType()) {
-            return $this->imdbProvider
-                ->search(
-                    $library->getSerie()->getName()
-                )
-                ->saveMainPhoto($library->getId());
-        }
-
         return $this->imdbProvider
-            ->search($library->getName())
-            ->saveMainPhoto($library->getId());
+            ->search($title)
+            ->saveMainPhoto($thumbnailName);
     }
 }

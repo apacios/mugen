@@ -73,7 +73,13 @@ class Library
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $episode;
+    private ?int $episode;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $season;
 
     public function __construct()
     {
@@ -182,7 +188,7 @@ class Library
         return $this;
     }
 
-    public function getEpisode(): int
+    public function getEpisode(): ?int
     {
         return $this->episode;
     }
@@ -190,6 +196,18 @@ class Library
     public function setEpisode(?int $episode): self
     {
         $this->episode = $episode;
+
+        return $this;
+    }
+
+    public function getSeason(): ?int
+    {
+        return $this->season;
+    }
+
+    public function setSeason(?int $season): self
+    {
+        $this->season = $season;
 
         return $this;
     }

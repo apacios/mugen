@@ -28,16 +28,10 @@ class Serie
     private string $name;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
-     */
-    private int $season;
-
-    /**
      * @var Collection<Library>
      * @ORM\OneToMany(targetEntity=Library::class, mappedBy="serie")
      */
-    private Collection $videos;
+    private Collection $library;
 
     /**
      * @var bool
@@ -57,9 +51,15 @@ class Serie
      */
     private DateTimeImmutable $updatedAt;
 
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="series")
+     */
+    private Category $category;
+
     public function __construct()
     {
-        $this->videos = new ArrayCollection();
+        $this->library = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -81,30 +81,18 @@ class Serie
         return $this;
     }
 
-    public function getSeason(): ?int
-    {
-        return $this->season;
-    }
-
-    public function setSeason(int $season): self
-    {
-        $this->season = $season;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Library[]
      */
     public function getVideos(): Collection
     {
-        return $this->videos;
+        return $this->library;
     }
 
     public function addVideo(Library $library): self
     {
-        if (!$this->videos->contains($library)) {
-            $this->videos[] = $library;
+        if (!$this->library->contains($library)) {
+            $this->library[] = $library;
             $library->setSerie($this);
         }
 
@@ -113,7 +101,7 @@ class Serie
 
     public function removeVideo(Library $library): self
     {
-        if ($this->videos->removeElement($library)) {
+        if ($this->library->removeElement($library)) {
             // set the owning side to null (unless already changed)
             if ($library->getSerie() === $this) {
                 $library->setSerie(null);
@@ -155,6 +143,18 @@ class Serie
     public function setUpdatedAt(DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
