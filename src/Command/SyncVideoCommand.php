@@ -22,8 +22,7 @@ class SyncVideoCommand extends Command
         EntityManagerInterface $em,
         VideoProvider $videoProvider,
         LibrarySyncHandler $libraryHandler
-    )
-    {
+    ) {
         $this->em = $em;
         $this->videoProvider = $videoProvider;
         $this->libraryHandler = $libraryHandler;

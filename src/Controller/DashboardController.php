@@ -21,8 +21,7 @@ class DashboardController extends AbstractController
         CategoryRepository $categoryRepository,
         LibraryRepository $libraryRepository,
         SerieRepository $serieRepository
-    ): Response
-    {
+    ): Response {
         $library = [];
 
         foreach ($categoryRepository->findAll() as $key => $category) {
