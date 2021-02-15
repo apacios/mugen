@@ -18,7 +18,11 @@ class SyncVideoCommand extends Command
     protected LibrarySyncHandler $libraryHandler;
     protected EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em, VideoProvider $videoProvider, LibrarySyncHandler $libraryHandler)
+    public function __construct(
+        EntityManagerInterface $em,
+        VideoProvider $videoProvider,
+        LibrarySyncHandler $libraryHandler
+    )
     {
         $this->em = $em;
         $this->videoProvider = $videoProvider;

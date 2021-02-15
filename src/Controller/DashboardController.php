@@ -17,7 +17,11 @@ class DashboardController extends AbstractController
     /**
      * @Route("/", name="dashboard_index")
      */
-    public function index(CategoryRepository $categoryRepository, LibraryRepository $libraryRepository, SerieRepository $serieRepository): Response
+    public function index(
+        CategoryRepository $categoryRepository,
+        LibraryRepository $libraryRepository,
+        SerieRepository $serieRepository
+    ): Response
     {
         $library = [];
 
