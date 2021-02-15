@@ -24,6 +24,9 @@ app-composer: ## Install composer packages
 app-clear_cache: ## Clear Symfony cache
 	docker-compose exec app sh -c "php bin/console cache:clear"
 
+app-sync_videos: ## Sync videos
+	docker-compose exec app sh -c "php bin/console app:sync-videos"
+
 ##@ Docker
 
 docker-up: ## Start docker containers

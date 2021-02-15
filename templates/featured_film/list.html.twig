@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('featuredfilm') }}
+{% endblock %}
+
+{% block body %}
+    <div id="featuredfilm" class="page">
+        <section class="list p-3">
+            <div class="row">
+                {% for video in libraryList %}
+                    <div class="col-2 mb-4">
+                        <a href="{{ path('video_show', {id: video.id}) }}">
+                            {{ video.name }} <img src="/thumbnails/ff{{ video.id }}.png" alt="">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('featuredfilm') }}
+{% endblock %}

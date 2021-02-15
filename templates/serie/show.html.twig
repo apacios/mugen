@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ serie.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('serie') }}
+{% endblock %}
+
+{% block body %}
+    <div id="serie" class="page">
+        <section class="description row p-4">
+            <div class="col-9">
+                <h1>{{ serie.name }}</h1>
+                <p>{{ data_imdb.storyline }}</p>
+                <p>{{ data_imdb.rate }}</p>
+            </div>
+            <div class="col-3 thumbnail" style="background-image: url(/thumbnails/s{{ serie.id }}.png)"></div>
+        </section>
+
+        <section class="list p-4">
+            {% for number, seasonLibrary in serie.getVideos %}
+                <h1>Season {{ number }}</h1>
+                <div class="row">
+                    {% for video in seasonLibrary %}
+                        <div class="col-2 mb-4">
+                            <a href="{{ path('video_show', {id: video.id}) }}">
+                                Episode {{ video.episode }} <img src="/thumbnails/s{{ serie.id }}.png" alt="">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('serie') }}
+{% endblock %}

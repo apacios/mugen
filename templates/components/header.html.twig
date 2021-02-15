@@ -7,8 +7,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 {% for category in getCategories() %}
-                <li class="nav-item">
-                        <a class="nav-link" href="#">
+
+                    {% if 'featured_film' == category.type %}
+                        {% set path = 'featuredfilm_list' %}
+                    {% elseif 'serie' == category.type %}
+                         {% set path = 'serie_list' %}
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path(path, {id: category.id}) }}">
                             <span class="material-icons">{{ category.icon }}</span> {{ category.name }}
                         </a>
                     </li>

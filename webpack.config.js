@@ -23,6 +23,8 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('dashboard', './assets/page/dashboard.js')
     .addEntry('video', './assets/page/video.js')
+    .addEntry('serie', './assets/page/serie.js')
+    .addEntry('featuredfilm', './assets/page/featuredfilm.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     // .enableStimulusBridge('./assets/controllers.json')
