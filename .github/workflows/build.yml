@@ -50,5 +50,3 @@ jobs:
         run: php vendor/bin/phpcs
       - name: Run PHPStan for dev env
         run: vendor/bin/phpstan analyse -c phpstan.neon src --level 7 --no-progress
-      - name: Run PHPStan for doctrine
-        run: vendor/bin/phpstan analyse -c phpstan-doctrine.neon src --level 7 --no-progress
