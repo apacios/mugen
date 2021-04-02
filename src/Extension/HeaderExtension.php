@@ -10,7 +10,8 @@ class HeaderExtension extends AbstractExtension
 {
     private CategoryRepository $categoryRepository;
 
-    public function __construct(CategoryRepository $categoryRepository) {
+    public function __construct(CategoryRepository $categoryRepository)
+    {
         $this->categoryRepository = $categoryRepository;
     }
 

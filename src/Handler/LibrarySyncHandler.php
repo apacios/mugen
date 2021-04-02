@@ -9,7 +9,7 @@ use App\Entity\Category;
 use App\Provider\ImdbProvider;
 use Doctrine\ORM\EntityManagerInterface;
 
-class LibraryHandler
+class LibrarySyncHandler
 {
     protected EntityManagerInterface $em;
     protected ImdbProvider $imdbProvider;

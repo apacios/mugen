@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('serie') }}
+{% endblock %}
+
+{% block body %}
+    <div id="serie" class="page">
+        <section class="list p-3">
+            <div class="row">
+                {% for serie in serieList %}
+                    <div class="col-2 mb-4">
+                        <a href="{{ path('serie_show', {id: serie.id}) }}">
+                            {{ serie.name }} <img src="/thumbnails/s{{ serie.id }}.png" alt="">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('serie') }}
+{% endblock %}

@@ -30,6 +30,7 @@ class Serie
     /**
      * @var Collection<Library>
      * @ORM\OneToMany(targetEntity=Library::class, mappedBy="serie")
+     * @ORM\OrderBy({"season" = "ASC", "episode" = "ASC"})
      */
     private Collection $library;
 
@@ -82,11 +83,28 @@ class Serie
     }
 
     /**
-     * @return Collection|Library[]
+     * @return array
      */
-    public function getVideos(): Collection
+    public function getVideos(): array
     {
-        return $this->library;
+        $library = [];
+
+        foreach ($this->library as $video) {
+            $library[$video->getSeason()][] = $video;
+        }
+
+        return $library;
+    }
+
+    public function getSeasons(): array
+    {
+        $seasons = [];
+
+        foreach ($this->library as $video) {
+            $seasons[] = $video->getSeason();
+        }
+
+        return array_unique($seasons);
     }
 
     public function addVideo(Library $library): self
